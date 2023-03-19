@@ -1,4 +1,4 @@
-![progress-banner](https://codecrafters.io/landing/images/default_progress_banners/grep.png)
+[![progress-banner](https://app.codecrafters.io/progress/grep/46b9f488-00ab-4ab8-9efc-f24d6e746ce1)](https://app.codecrafters.io/users/kazu914)
 
 This is a starting point for Rust solutions to the
 ["Build Your Own grep" Challenge](https://app.codecrafters.io/courses/grep/overview).
