@@ -6,17 +6,20 @@ fn is_word_char(c: char) -> bool {
     c.is_ascii_alphanumeric() || c == '_'
 }
 
+fn is_char_in_set(c: char, set: &str) -> bool {
+    set.chars().any(|x| x == c)
+}
+
 fn match_pattern(input_line: &str, pattern: &str) -> bool {
     if pattern.chars().count() == 1 {
         return input_line.contains(pattern);
-    }
-    if pattern == r"\d" {
-        let result = input_line.chars().find(|c| c.is_digit(10));
-        return result.is_some();
-    }
-    if pattern == r"\w" {
-        let result = input_line.chars().find(|c| is_word_char(*c));
-        return result.is_some();
+    } else if pattern == r"\d" {
+        input_line.chars().any(|c| c.is_digit(10))
+    } else if pattern == r"\w" {
+        input_line.chars().any(|c| is_word_char(c))
+    } else if pattern.starts_with('[') && pattern.ends_with(']') {
+        let pattern_set = &pattern[1..pattern.len() - 1];
+        input_line.chars().any(|c| is_char_in_set(c, pattern_set))
     } else {
         panic!("Unhandled pattern: {}", pattern)
     }
