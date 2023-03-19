@@ -2,12 +2,20 @@ use std::env;
 use std::io;
 use std::process;
 
+fn is_word_char(c: char) -> bool {
+    c.is_ascii_alphanumeric() || c == '_'
+}
+
 fn match_pattern(input_line: &str, pattern: &str) -> bool {
     if pattern.chars().count() == 1 {
         return input_line.contains(pattern);
     }
     if pattern == r"\d" {
         let result = input_line.chars().find(|c| c.is_digit(10));
+        return result.is_some();
+    }
+    if pattern == r"\w" {
+        let result = input_line.chars().find(|c| is_word_char(*c));
         return result.is_some();
     } else {
         panic!("Unhandled pattern: {}", pattern)
