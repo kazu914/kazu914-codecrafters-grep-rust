@@ -10,6 +10,10 @@ fn is_char_in_set(c: char, set: &str) -> bool {
     set.chars().any(|x| x == c)
 }
 
+fn is_char_not_in_set(c: char, set: &str) -> bool {
+    set.chars().all(|x| x != c)
+}
+
 fn match_pattern(input_line: &str, pattern: &str) -> bool {
     if pattern.chars().count() == 1 {
         return input_line.contains(pattern);
@@ -19,7 +23,14 @@ fn match_pattern(input_line: &str, pattern: &str) -> bool {
         input_line.chars().any(|c| is_word_char(c))
     } else if pattern.starts_with('[') && pattern.ends_with(']') {
         let pattern_set = &pattern[1..pattern.len() - 1];
-        input_line.chars().any(|c| is_char_in_set(c, pattern_set))
+        if pattern_set.starts_with('^') {
+            let inverted_set = &pattern_set[1..];
+            input_line
+                .chars()
+                .all(|c| is_char_not_in_set(c, inverted_set))
+        } else {
+            input_line.chars().any(|c| is_char_in_set(c, pattern_set))
+        }
     } else {
         panic!("Unhandled pattern: {}", pattern)
     }
