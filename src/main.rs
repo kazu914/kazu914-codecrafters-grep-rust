@@ -16,20 +16,20 @@ fn is_char_not_in_set(c: char, set: &str) -> bool {
 
 fn match_pattern(input_line: &str, pattern: &str) -> bool {
     if pattern.chars().count() == 1 {
-        return input_line.contains(pattern);
+        input_line.contains(pattern)
     } else if pattern == r"\d" {
-        input_line.chars().any(|c| c.is_digit(10))
+        input_line.chars().any(|c| c.is_ascii_digit())
     } else if pattern == r"\w" {
-        input_line.chars().any(|c| is_word_char(c))
+        input_line.chars().any(is_word_char)
     } else if pattern.starts_with('[') && pattern.ends_with(']') {
         let pattern_set = &pattern[1..pattern.len() - 1];
-        if pattern_set.starts_with('^') {
+        if !pattern_set.starts_with('^') {
+            input_line.chars().any(|c| is_char_in_set(c, pattern_set))
+        } else {
             let inverted_set = &pattern_set[1..];
             input_line
                 .chars()
                 .all(|c| is_char_not_in_set(c, inverted_set))
-        } else {
-            input_line.chars().any(|c| is_char_in_set(c, pattern_set))
         }
     } else {
         panic!("Unhandled pattern: {}", pattern)
