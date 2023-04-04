@@ -73,7 +73,7 @@ fn compile_patterns(patterns_input: &str) -> Vec<String> {
     patterns
 }
 
-fn match_here(input_line: &str, patterns: Vec<String>) -> bool {
+fn match_here(input_line: &str, patterns: Vec<String>, is_one_time: bool) -> bool {
     if patterns.is_empty() {
         return true;
     }
@@ -82,15 +82,21 @@ fn match_here(input_line: &str, patterns: Vec<String>) -> bool {
         return false;
     }
 
+    if patterns.first().unwrap() == "^" {
+        return match_here(input_line, patterns[1..].to_vec(), true);
+    }
+
     let res = match_pattern(
         &input_line.chars().next().unwrap().to_string(),
         patterns.first().unwrap(),
     );
 
     if res {
-        match_here(&input_line[1..], patterns[1..].to_vec())
+        match_here(&input_line[1..], patterns[1..].to_vec(), is_one_time)
+    } else if !is_one_time {
+        match_here(&input_line[1..], patterns, is_one_time)
     } else {
-        match_here(&input_line[1..], patterns)
+        false
     }
 }
 
@@ -111,7 +117,7 @@ fn main() {
 
     let patterns = compile_patterns(&pattern);
 
-    if match_here(&input_line, patterns) {
+    if match_here(&input_line, patterns, false) {
         process::exit(0)
     } else {
         process::exit(1)
