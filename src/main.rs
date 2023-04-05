@@ -78,6 +78,13 @@ fn match_here(input_line: &str, patterns: Vec<String>, is_one_time: bool) -> boo
         return true;
     }
 
+    if patterns.len() == 1 && patterns.first().unwrap() == "$" {
+        if input_line.is_empty() {
+            return true;
+        }
+        return false;
+    }
+
     if input_line.is_empty() {
         return false;
     }
